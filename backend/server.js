@@ -15,8 +15,8 @@ const server = http.createServer(app);
 
 // CORS for both HTTP requests and Socket.io
 app.use(cors({
-   // origin: 'http://glof-frontend.s3-website.ap-south-1.amazonaws.com', // Allow only your React app's origin
-   origin: '*', 
+  // origin: 'http://glof-frontend.s3-website.ap-south-1.amazonaws.com', // Allow only your React app's origin
+   origin: 'http://localhost:5173', 
    methods: ['GET', 'POST'],        // Allow specific HTTP methods
    allowedHeaders: ['Content-Type', 'Authorization'],
    credentials: true                // Allow cookies and other credentials
@@ -173,6 +173,7 @@ app.post("/api/alert/:msg", async (req, res) => {
 // Handling General Public Login
 app.post("/api/general-public-singup/login-data", cors(), async (req, res) => {
     try {
+        console.log("Login request received: ", req.body); 
         const data = req.body;
         const result = await handleGenralPublicLogIn(data);
         console.log("General Public Login result: ", result);
@@ -274,7 +275,7 @@ app.get("/api/all-alert-data", async(req,res)=>{
         console.log("Error while getting alert from data in server ",error)
     }
 })
-
+app.use(cors());
 app.get("/api/hello", async (req, res) => {
     res.json({ msg: "Hello from GLOF" })
 })
@@ -282,6 +283,8 @@ app.get("/", (req, res) => {
     res.send("Welcome to the GLOF Monitoring System API");
 });
 app.options('*', cors()); // Handle preflight requests
+app.options('/api/general-public-singup/login-data', cors());
+
 
 app.options('*',(req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
